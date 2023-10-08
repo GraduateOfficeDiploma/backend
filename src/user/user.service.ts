@@ -5,18 +5,18 @@ import { hashPassword } from '../helpers/hashPassword';
 import { CreateUserPayload } from './payload/create-user.payload';
 import { UpdateUserPayload } from './payload/update-user.payload';
 import { PublicUser } from './entities/publicUser.entity';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
   ) {}
 
-  async findOne(conditions: FindOptionsWhere<User>): Promise<User> {
+  async findOne(conditions: FindOptionsWhere<UserEntity>): Promise<UserEntity> {
     const users = await this.usersRepository.find({
       select: [
         'firstName',
@@ -34,7 +34,7 @@ export class UserService {
     return users[0] ?? null;
   }
 
-  async findById(id: string): Promise<User> {
+  async findById(id: string): Promise<UserEntity> {
     return this.usersRepository.findOne({
       where: {
         id,
@@ -43,7 +43,7 @@ export class UserService {
   }
 
   async create(createUserDto: CreateUserPayload): Promise<PublicUser> {
-    const user = createUserDto as User;
+    const user = createUserDto as UserEntity;
     user.password = await hashPassword(user.password);
     const newUser = await this.usersRepository.save(user);
     delete newUser.password;

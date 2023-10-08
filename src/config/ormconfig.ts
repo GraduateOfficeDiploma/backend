@@ -11,5 +11,8 @@ export const OrmConfigOptions: TypeOrmModuleOptions = {
   entities: ['dist/**/*.entity{.ts,.js}'],
   namingStrategy: new SnakeNamingStrategy(),
   synchronize: true,
-  ssl: { rejectUnauthorized: false },
+  ssl:
+    process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: false }
+      : false,
 };
