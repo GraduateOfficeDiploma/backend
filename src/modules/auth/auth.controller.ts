@@ -14,7 +14,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { UserService } from '../user/user.service';
 import JwtRefreshGuard from './guards/refresh-token.guard';
 import { PublicUser } from '../user/entities/publicUser.entity';
-import { CustomRequest } from '../types/request';
+import { CustomRequest } from '../../types/request';
 
 @Controller('auth')
 export class AuthController {

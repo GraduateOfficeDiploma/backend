@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import { hashPassword } from '../helpers/hashPassword';
+import { hashPassword } from '../../libs/helpers/hashPassword';
 import { CreateUserPayload } from './payload/create-user.payload';
 import { UpdateUserPayload } from './payload/update-user.payload';
 import { PublicUser } from './entities/publicUser.entity';

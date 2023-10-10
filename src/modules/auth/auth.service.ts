@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { validatePassword } from '../helpers/hashPassword';
+import { validatePassword } from '../../libs/helpers/hashPassword';
 import { PublicUser } from '../user/entities/publicUser.entity';
 import { UserService } from '../user/user.service';
 import { CookieOptions } from 'express';

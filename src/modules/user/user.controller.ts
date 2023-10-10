@@ -13,8 +13,8 @@ import { UserService } from './user.service';
 import { CreateUserPayload } from './payload/create-user.payload';
 import { UpdateUserPayload } from './payload/update-user.payload';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ResourceExistsException } from '../helpers/CustomExceptions';
-import { CustomRequest } from '../types/request';
+import { ResourceExistsException } from '../../libs/helpers/CustomExceptions';
+import { CustomRequest } from '../../types/request';
 
 @Controller('users')
 export class UserController {
