@@ -19,14 +19,13 @@ export class UserService {
   async findOne(conditions: FindOptionsWhere<UserEntity>): Promise<UserEntity> {
     const users = await this.usersRepository.find({
       select: [
-        'firstName',
-        'middleName',
-        'lastName',
         'id',
+        'fullName',
         'password',
         'refreshToken',
         'avatarUrl',
         'email',
+        'role',
         'registeredAt',
       ],
       where: conditions,

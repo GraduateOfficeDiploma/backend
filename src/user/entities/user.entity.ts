@@ -1,24 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { RoleEnum } from '../enum/role.enum';
 
 @Entity({ name: 'user' })
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: false, length: 100 })
-  firstName: string;
-
-  @Column({ nullable: false, length: 100 })
-  middleName: string;
-
-  @Column({ nullable: false, length: 100 })
-  lastName: string;
+  @Column({ nullable: false, length: 256 })
+  fullName: string;
 
   @Column({ nullable: false, select: false })
   password: string;
 
   @Column({ nullable: false, length: 250, unique: true })
   email: string;
+
+  @Column({ nullable: false })
+  role: RoleEnum = RoleEnum.Guest;
 
   @Column({ nullable: true })
   avatarUrl: string;
