@@ -8,6 +8,7 @@ import { PublicUser } from './entities/publicUser.entity';
 import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { NotFoundError } from 'rxjs';
+import { RoleEnum } from './enum/role.enum';
 
 @Injectable()
 export class UserService {
@@ -44,6 +45,7 @@ export class UserService {
   async create(createUserDto: CreateUserPayload): Promise<PublicUser> {
     const user = createUserDto as UserEntity;
     user.password = await hashPassword(user.password);
+    user.role = RoleEnum.Guest;
     const newUser = await this.usersRepository.save(user);
     delete newUser.password;
     return newUser;
