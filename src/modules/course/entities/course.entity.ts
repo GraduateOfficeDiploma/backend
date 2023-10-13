@@ -2,15 +2,13 @@ import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserEntity } from '../../user/entities/user.entity';
 import { TaskEntity } from '../../task/entities/task.entity';
-import { TaskSubmissionEntity } from '../../task/entities/task-submission.entity';
+import { CourseMemberEntity } from './course-member.entity';
 
 @Entity({ name: 'course' })
 export class CourseEntity {
@@ -33,7 +31,6 @@ export class CourseEntity {
   @JoinColumn({ name: 'created_by' })
   createdBy: UserEntity;
 
-  @ManyToMany(() => UserEntity)
-  @JoinTable({ name: 'course_member' })
-  members: UserEntity[];
+  @OneToMany(() => CourseMemberEntity, (member) => member.course)
+  members: CourseMemberEntity[];
 }

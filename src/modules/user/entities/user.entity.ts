@@ -1,5 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import { RoleEnum } from '../enum/role.enum';
+import {CourseMemberEntity} from "../../course/entities/course-member.entity";
+import {CourseEntity} from "../../course/entities/course.entity";
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -26,4 +28,7 @@ export class UserEntity {
 
   @Column({ nullable: false, default: '', select: false })
   refreshToken?: string;
+
+  @OneToMany(() => CourseMemberEntity, (courseMember) => courseMember.user)
+  courses: CourseEntity[];
 }

@@ -15,6 +15,7 @@ import { UserService } from '../user/user.service';
 import JwtRefreshGuard from './guards/refresh-token.guard';
 import { PublicUser } from '../user/entities/publicUser.entity';
 import { CustomRequest } from '../../types/request';
+import { LoginPayload } from './payload/login.payload';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +25,10 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async login(@Body() body, @Res({ passthrough: true }) res: Response) {
+  async login(
+    @Body() body: LoginPayload,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const { email, password } = body;
     const user = await this.authService.validateUser(email, password);
     if (!user) {

@@ -8,24 +8,35 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCoursePayload } from './payload/create-course.payload';
 import { UpdateCoursePayload } from './payload/update-course.payload';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CustomRequest } from '../../types/request';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('courses')
+@UseGuards(JwtAuthGuard)
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(
+    @Req() req: CustomRequest,
     @Body() createCoursePayload: CreateCoursePayload,
     @UploadedFile() image: Express.Multer.File,
   ) {
     createCoursePayload.image = image;
-    return this.courseService.create(createCoursePayload);
+    return this.courseService.create(createCoursePayload, req.user);
+  }
+
+  @Post(':id/join')
+  addCourseMember(@Req() req: CustomRequest, @Param('id') courseId: string) {
+    return this.courseService.addMember(courseId, req.user);
   }
 
   @Get()
