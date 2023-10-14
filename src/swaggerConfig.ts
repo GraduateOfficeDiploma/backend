@@ -3,8 +3,8 @@ import { INestApplication } from '@nestjs/common';
 
 export function setupSwagger(app: INestApplication): void {
   const config = new DocumentBuilder()
-    .setTitle('Your API Title')
-    .setDescription('API documentation for your Nest.js application')
+    .setTitle('GraduateOfficeDiploma')
+    .setDescription('API documentation for GraduateOfficeDiploma back-end (Nest.js)')
     .setVersion('1.0')
     .build();
 
