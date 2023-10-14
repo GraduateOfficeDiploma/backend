@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 // First field in db should be days amount of studying (0 from start)
 // Second field should in db should be flag continue_studying which is set by admin
 
