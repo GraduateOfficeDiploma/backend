@@ -1,7 +1,7 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { RoleEnum } from '../enum/role.enum';
-import {CourseMemberEntity} from "../../course/entities/course-member.entity";
-import {CourseEntity} from "../../course/entities/course.entity";
+import { CourseMemberEntity } from '../../course/entities/course-member.entity';
+import { CourseEntity } from '../../course/entities/course.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {

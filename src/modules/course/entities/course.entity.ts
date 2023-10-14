@@ -21,7 +21,7 @@ export class CourseEntity {
   @Column({ type: 'text', nullable: true, array: true })
   schedule: string[];
 
-  @Column()
+  @Column({ type: 'text', nullable: true })
   imageUrl: string;
 
   @OneToMany(() => TaskEntity, (task) => task.course)
