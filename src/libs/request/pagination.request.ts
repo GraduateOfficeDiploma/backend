@@ -1,25 +1,16 @@
 import { IsNumber, IsOptional } from 'class-validator';
+import { FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 
-type PaginationFilter = {
-  // key must be a property of the Entity that is being filtered
-  [key: string]: any;
-};
+export class PaginationRequest<TEntity> {
+  filter: FindOptionsWhere<TEntity>;
 
-type OrderBy = {
-  // key must be a property of the Entity that is being sorted
-  [key: string]: 'ASC' | 'DESC';
-};
-
-export class PaginationRequest {
-  filter: PaginationFilter;
-
-  orderBy: OrderBy;
+  orderBy: FindOptionsOrder<TEntity>;
 
   @IsNumber()
   @IsOptional()
-  page: number; // 1, 2, 3 etc
+  page: number = 1; // 1, 2, 3 etc
 
   @IsNumber()
   @IsOptional()
-  limit: number; // the number of items to be displayed on the page
+  limit: number = 10; // the number of items to be displayed on the page
 }

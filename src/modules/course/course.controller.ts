@@ -17,6 +17,8 @@ import { UpdateCoursePayload } from './payload/update-course.payload';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CustomRequest } from '../../types/request';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PaginationRequest } from '../../libs/request/pagination.request';
+import { CourseEntity } from './entities/course.entity';
 
 @Controller('courses')
 @UseGuards(JwtAuthGuard)
@@ -40,8 +42,11 @@ export class CourseController {
   }
 
   @Get()
-  findAll() {
-    return this.courseService.findAll();
+  getCourses(
+    @Req() req: CustomRequest,
+    @Body() payload: PaginationRequest<CourseEntity>,
+  ) {
+    return this.courseService.getCourses(req.user, payload);
   }
 
   @Get(':id')

@@ -7,11 +7,13 @@ import { CreateCoursePayload } from './payload/create-course.payload';
 import { UpdateCoursePayload } from './payload/update-course.payload';
 import { CommandResponse } from '../../libs/response/command.response';
 import { CourseEntity } from './entities/course.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CloudinaryService } from '../../libs/cloudinary/cloudinary.service';
 import { UserEntity } from '../user/entities/user.entity';
 import { CourseMemberEntity } from './entities/course-member.entity';
+import { PaginationRequest } from '../../libs/request/pagination.request';
+import { of } from 'rxjs';
 
 @Injectable()
 export class CourseService {
@@ -28,6 +30,7 @@ export class CourseService {
     user: UserEntity,
   ): Promise<CommandResponse> {
     const course = new CourseEntity();
+    const courseOwner = new CourseMemberEntity();
 
     let imageUrl = null;
     if (createCoursePayload.image) {
@@ -39,11 +42,15 @@ export class CourseService {
     }
 
     course.name = createCoursePayload.name;
-    course.schedule = createCoursePayload.schedule;
+    course.schedule = createCoursePayload.schedule.filter((s) => s?.length > 0);
     course.imageUrl = imageUrl;
     course.createdBy = user;
 
+    courseOwner.user = user;
+    courseOwner.course = course;
+
     await this.courseRepository.save(course);
+    await this.courseMemberRepository.save(courseOwner);
 
     return {
       id: course.id,
@@ -83,8 +90,22 @@ export class CourseService {
     };
   }
 
-  findAll() {
-    return `This action returns all course`;
+  async getCourses(
+    user: UserEntity,
+    { filter, orderBy, page, limit }: PaginationRequest<CourseEntity>,
+  ) {
+    const offset = (page - 1) * limit;
+    return this.courseRepository.find({
+      where: {
+        members: {
+          user: user.id,
+        },
+        ...filter,
+      },
+      order: orderBy,
+      skip: offset,
+      take: limit,
+    });
   }
 
   findOne(id: string) {
