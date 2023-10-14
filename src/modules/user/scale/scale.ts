@@ -1,5 +1,3 @@
-dayjs.extend(window.dayjs_plugin_duration);
-
 // First field in db should be days amount of studying (0 from start)
 // Second field should in db should be flag continue_studying which is set by admin
 
