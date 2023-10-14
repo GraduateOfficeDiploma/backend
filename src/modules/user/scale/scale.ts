@@ -43,5 +43,5 @@ if (study_flag === true){
   //days_studying = getDaysFromDB() + 1;
 }
 
-console.log(days_studying)
+//console.log(days_studying)
 }
