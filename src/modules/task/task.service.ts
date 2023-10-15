@@ -8,7 +8,7 @@ export class TaskService {
     return 'This action adds a new task';
   }
 
-  findAll() {
+  find() {
     return `This action returns all task`;
   }
 

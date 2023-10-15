@@ -7,13 +7,12 @@ import { CreateCoursePayload } from './payload/create-course.payload';
 import { UpdateCoursePayload } from './payload/update-course.payload';
 import { CommandResponse } from '../../libs/response/command.response';
 import { CourseEntity } from './entities/course.entity';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CloudinaryService } from '../../libs/cloudinary/cloudinary.service';
 import { UserEntity } from '../user/entities/user.entity';
 import { CourseMemberEntity } from './entities/course-member.entity';
 import { PaginationRequest } from '../../libs/request/pagination.request';
-import { of } from 'rxjs';
 
 @Injectable()
 export class CourseService {
@@ -111,7 +110,7 @@ export class CourseService {
     });
   }
 
-  async findOne(id: string, user: UserEntity) {
+  async findOne(id: string) {
     const course = await this.courseRepository.findOne({
       where: {
         id,
@@ -119,8 +118,8 @@ export class CourseService {
       relations: {
         createdBy: true,
         members: {
-          user: true
-        }
+          user: true,
+        },
       },
     });
     const membersCount = await this.courseMemberRepository.count({

@@ -4,7 +4,9 @@ import { INestApplication } from '@nestjs/common';
 export function setupSwagger(app: INestApplication): void {
   const config = new DocumentBuilder()
     .setTitle('GraduateOfficeDiploma')
-    .setDescription('API documentation for GraduateOfficeDiploma back-end (Nest.js)')
+    .setDescription(
+      'API documentation for GraduateOfficeDiploma back-end (Nest.js)',
+    )
     .setVersion('1.0')
     .build();
 
