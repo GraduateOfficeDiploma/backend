@@ -16,7 +16,7 @@ import JwtRefreshGuard from './guards/refresh-token.guard';
 import { PublicUser } from '../user/entities/publicUser.entity';
 import { CustomRequest } from '../../types/request';
 import { LoginPayload } from './payload/login.payload';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('Authentication') // Add a tag to group related endpoints in Swagger
 @ApiBearerAuth() // Enable Bearer Authentication
