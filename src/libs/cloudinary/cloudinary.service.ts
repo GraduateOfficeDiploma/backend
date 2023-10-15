@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { v2 } from 'cloudinary';
 import * as sharp from 'sharp';
+import { Readable } from 'stream';
 
 @Injectable()
 export class CloudinaryService {
@@ -24,7 +25,15 @@ export class CloudinaryService {
   }
 
   async uploadDocument(document: Express.Multer.File): Promise<string> {
-    const response = await v2.uploader.upload(document.buffer.toString());
-    return response.url;
+    return new Promise((resolve, reject) => {
+      const stream = v2.uploader.upload_stream(
+        { resource_type: 'raw' },
+        (err, result) => {
+          if (result) resolve(result.url);
+          else reject(err);
+        },
+      );
+      Readable.from(document.buffer).pipe(stream);
+    });
   }
 }

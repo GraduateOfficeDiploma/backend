@@ -1,4 +1,4 @@
-import { IsDate, IsString } from 'class-validator';
+import { IsDate, IsString, IsUUID } from 'class-validator';
 
 export class CreateTaskPayload {
   @IsString()
@@ -9,6 +9,9 @@ export class CreateTaskPayload {
 
   @IsDate()
   dueDate: Date;
+
+  @IsUUID()
+  courseId: string;
 
   attachments: Express.Multer.File[];
 }
