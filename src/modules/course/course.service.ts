@@ -105,11 +105,31 @@ export class CourseService {
       order: orderBy,
       skip: offset,
       take: limit,
+      relations: {
+        createdBy: true,
+      },
     });
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} course`;
+  async findOne(id: string, user: UserEntity) {
+    const course = await this.courseRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        createdBy: true,
+        members: {
+          user: true
+        }
+      },
+    });
+    const membersCount = await this.courseMemberRepository.count({
+      where: { course: id },
+    });
+    return {
+      ...course,
+      membersCount,
+    };
   }
 
   update(id: string, updateCoursePayload: UpdateCoursePayload) {

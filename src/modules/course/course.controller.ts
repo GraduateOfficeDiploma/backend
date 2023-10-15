@@ -50,8 +50,8 @@ export class CourseController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.courseService.findOne(id);
+  findOne(@Param('id') id: string, @Req() req: CustomRequest) {
+    return this.courseService.findOne(id, req.user);
   }
 
   @Patch(':id')
