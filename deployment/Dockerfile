@@ -1,7 +1,7 @@
 # Use an official Node.js runtime as the base image
 FROM node:18
 
-# Set the working directory in the container
+# Set the working directory in the container (for back-end main.ts container)
 WORKDIR /src
 
 # Copy package.json and package-lock.json to the working directory
