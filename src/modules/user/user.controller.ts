@@ -15,6 +15,10 @@ import { UpdateUserPayload } from './payload/update-user.payload';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ResourceExistsException } from '../../libs/helpers/CustomExceptions';
 import { CustomRequest } from '../../types/request';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+
+@ApiTags('Users') // Add a tag to group related endpoints in Swagger
+@ApiBearerAuth() // Enable Bearer Authentication
 
 @Controller('users')
 export class UserController {
@@ -22,6 +26,9 @@ export class UserController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiResponse({ status: 200, description: 'User found', type: CreateUserPayload })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   getOne(@Param('id') id: string) {
     return this.userService.findById(id);
   }
@@ -35,6 +42,9 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
+  @ApiOperation({ summary: 'Update user' })
+  @ApiResponse({ status: 200, description: 'User updated successfully', type: UpdateUserPayload })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   update(
     @Req() req: CustomRequest,
     @Param('id') id: string,
