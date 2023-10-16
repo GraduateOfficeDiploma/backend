@@ -7,8 +7,8 @@ WORKDIR /src
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Install only required packages
-RUN npm ci --omit=dev
+# Install the required packages
+RUN npm install
 
 # Bundle your Nest.js application source code
 COPY . .
