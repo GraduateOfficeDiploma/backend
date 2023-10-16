@@ -20,7 +20,7 @@ jobs:
         run: |
           IMAGE_NAME=my-docker-image-${GITHUB_SHA::8}
           # Set the build context to the project root
-          docker build -t $IMAGE_NAME -f deployment/Dockerfile -C $GITHUB_WORKSPACE .
+          docker build -t $IMAGE_NAME -f deployment/Dockerfile -f .
           # Log in to Heroku container registry
           docker login --username=_ --password-stdin registry.heroku.com <<< ${{ secrets.HEROKU_API_KEY }}
           docker tag $IMAGE_NAME registry.heroku.com/${{ secrets.HEROKU_BACKEND_APP_NAME }}/web
