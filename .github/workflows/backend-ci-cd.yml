@@ -20,7 +20,7 @@ jobs:
         run: |
           IMAGE_NAME=my-docker-image-${GITHUB_SHA::8}
           docker build -t $IMAGE_NAME -f deployment/Dockerfile .
-          echo ${{ secrets.HEROKU_API_KEY }} | docker login --username=_ --password-stdin registry.heroku.com
+          docker login --username=_ --password-stdin registry.heroku.com <<< ${{ secrets.HEROKU_API_KEY }}
           docker tag $IMAGE_NAME registry.heroku.com/${{ secrets.HEROKU_BACKEND_APP_NAME }}/web
           docker push registry.heroku.com/${{ secrets.HEROKU_BACKEND_APP_NAME }}/web
           echo "DOCKER_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
@@ -35,8 +35,7 @@ jobs:
               curl https://cli-assets.heroku.com/install.sh | sh
           fi
 
-          # Set the Heroku API key as a Heroku CLI API key
-          echo $HEROKU_API_KEY | heroku login --no-interactive
+          # Deploy the Docker container to Heroku
           heroku container:release -a $HEROKU_BACKEND_APP_NAME web
 
       - name: Clean up
