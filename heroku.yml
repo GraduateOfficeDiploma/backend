@@ -1,17 +1,3 @@
 build:
   docker:
     web: deployment/Dockerfile
-
-environments:
-  staging:
-    addons:
-      - plan: heroku-postgresql
-        as: DATABASE
-    config:
-      NODE_ENV: staging
-  production:
-    addons:
-      - plan: heroku-postgresql
-        as: DATABASE
-    config:
-      NODE_ENV: production
