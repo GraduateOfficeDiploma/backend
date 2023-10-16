@@ -26,10 +26,18 @@ jobs:
           echo "DOCKER_IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
 
       - name: Deploy to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_BACKEND_APP_NAME: ${{ secrets.HEROKU_BACKEND_APP_NAME }}
         run: |
-          wget https://toolbelt.heroku.com/download/ubuntu -O heroku.tar.gz
-          tar -xvzf heroku.tar.gz
-          ./heroku container:release -a ${{ secrets.HEROKU_BACKEND_APP_NAME }} web
+          # Install Heroku CLI (if not already installed)
+          if ! command -v heroku &> /dev/null; then
+              curl https://cli-assets.heroku.com/install.sh | sh
+          fi
+
+          # Set the Heroku API key as a Heroku CLI API key
+          echo $HEROKU_API_KEY | heroku login --no-interactive
+          heroku container:release -a $HEROKU_BACKEND_APP_NAME web
 
       - name: Clean up
         run: |
