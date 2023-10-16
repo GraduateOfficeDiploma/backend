@@ -5,6 +5,7 @@ import { UserService } from '../user/user.service';
 import { CookieOptions } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { RoleEnum } from '../user/enum/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -24,8 +25,8 @@ export class AuthService {
     return user;
   }
 
-  createAccessToken(userId: string) {
-    const payload = { sub: userId };
+  createAccessToken(userId: string, role: RoleEnum) {
+    const payload = { sub: userId, role };
     return this.jwtService.sign(payload, {
       secret: this.configService.get('ACCESS_TOKEN_SECRET'),
       expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRATION_TIME') + 's',
@@ -48,8 +49,8 @@ export class AuthService {
     };
   }
 
-  createRefreshTokenCookie(userId: string) {
-    const payload = { sub: userId };
+  createRefreshTokenCookie(userId: string, role: RoleEnum) {
+    const payload = { sub: userId, role };
     const config = {
       expirationTime: Number(
         this.configService.get('REFRESH_TOKEN_EXPIRATION_TIME'),

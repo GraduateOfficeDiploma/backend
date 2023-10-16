@@ -1,15 +1,15 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Req,
-  UseInterceptors,
   UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskPayload } from './payload/create-task.payload';
@@ -19,13 +19,15 @@ import { PaginationRequest } from '../../libs/request/pagination.request';
 import { TaskEntity } from './entities/task.entity';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
   ApiBody,
+  ApiOperation,
   ApiParam,
+  ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RoleGuard } from '../auth/guards/role-guard.guard';
+import { RoleEnum } from '../user/enum/role.enum';
 
 @Controller('tasks')
 @ApiTags('Tasks') // Add a tag to group related endpoints in Swagger
@@ -45,6 +47,7 @@ export class TaskController {
     type: CreateTaskPayload,
     description: 'The created task',
   })
+  @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin]))
   create(
     @Body() createTaskPayload: CreateTaskPayload,
     @Req() req: CustomRequest,
@@ -62,6 +65,7 @@ export class TaskController {
     description: 'The ID of the task to submit a solution for',
   })
   @ApiResponse({ status: 200, description: 'The solution has been submitted' })
+  @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin, RoleEnum.Student]))
   submitSolution(
     @Param('id') id: string,
     @Req() req: CustomRequest,
@@ -77,6 +81,7 @@ export class TaskController {
     type: [TaskEntity],
     description: 'A list of tasks',
   })
+  @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin, RoleEnum.Student]))
   find(
     @Req() req: CustomRequest,
     @Body() payload: PaginationRequest<TaskEntity>,
@@ -88,6 +93,7 @@ export class TaskController {
   @ApiOperation({ summary: 'Find a task by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the task to find' })
   @ApiResponse({ status: 200, type: TaskEntity, description: 'The found task' })
+  @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin, RoleEnum.Student]))
   findOne(@Param('id') id: string, @Req() req: CustomRequest) {
     return this.taskService.findOne(id, req.user);
   }
@@ -104,6 +110,7 @@ export class TaskController {
     type: TaskEntity,
     description: 'The updated task',
   })
+  @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin]))
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskPayload) {
     return this.taskService.update(+id, updateTaskDto);
   }
@@ -112,6 +119,7 @@ export class TaskController {
   @ApiOperation({ summary: 'Delete a task by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the task to delete' })
   @ApiResponse({ status: 200, description: 'The task has been deleted' })
+  @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin]))
   remove(@Param('id') id: string) {
     return this.taskService.remove(+id);
   }

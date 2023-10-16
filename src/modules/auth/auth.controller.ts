@@ -47,12 +47,12 @@ export class AuthController {
     if (!user) {
       throw new UnauthorizedException();
     }
-    const accessToken = this.authService.createAccessToken(user.id);
+    const accessToken = this.authService.createAccessToken(user.id, user.role);
     const {
       name,
       token: refreshToken,
       options,
-    } = this.authService.createRefreshTokenCookie(user.id);
+    } = this.authService.createRefreshTokenCookie(user.id, user.role);
 
     res.cookie(name, refreshToken, options);
 
@@ -70,9 +70,11 @@ export class AuthController {
     status: 200,
     description: 'Access token refreshed successfully',
   })
-  refresh(@Req() req: CustomRequest) {
-    const user = req.user as PublicUser;
-    const accessToken = this.authService.createAccessToken(user.id);
+  async refresh(@Req() req: CustomRequest) {
+    const user = await this.userService.findOne({
+      id: req.user.id,
+    });
+    const accessToken = this.authService.createAccessToken(user.id, user.role);
 
     return {
       user,

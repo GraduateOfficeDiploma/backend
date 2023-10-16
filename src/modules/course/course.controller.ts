@@ -1,15 +1,15 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseInterceptors,
-  UploadedFile,
+  Get,
+  Param,
+  Patch,
+  Post,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCoursePayload } from './payload/create-course.payload';
@@ -20,16 +20,18 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PaginationRequest } from '../../libs/request/pagination.request';
 import { CourseEntity } from './entities/course.entity';
 import {
-  ApiTags,
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
+import { RoleGuard } from '../auth/guards/role-guard.guard';
+import { RoleEnum } from '../user/enum/role.enum';
 
 @Controller('courses')
-@UseGuards(JwtAuthGuard)
-@ApiTags('Courses') // Tag for this controller
+@ApiTags('Courses')
 @ApiBearerAuth() // Enable Bearer Authentication
+@UseGuards(JwtAuthGuard)
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
@@ -40,6 +42,8 @@ export class CourseController {
     status: 201,
     description: 'The course has been successfully created.',
   })
+  @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin]))
+  @UseGuards(JwtAuthGuard)
   create(
     @Req() req: CustomRequest,
     @Body() createCoursePayload: CreateCoursePayload,
@@ -55,6 +59,7 @@ export class CourseController {
     status: 200,
     description: 'You have successfully joined the course.',
   })
+  @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin, RoleEnum.Student]))
   addCourseMember(@Req() req: CustomRequest, @Param('id') courseId: string) {
     return this.courseService.addMember(courseId, req.user);
   }
@@ -66,6 +71,7 @@ export class CourseController {
     description: 'List of courses retrieved successfully.',
     type: [CourseEntity],
   })
+  @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin, RoleEnum.Student]))
   getCourses(
     @Req() req: CustomRequest,
     @Body() payload: PaginationRequest<CourseEntity>,
@@ -80,6 +86,14 @@ export class CourseController {
     description: 'The course details have been retrieved.',
     type: CourseEntity,
   })
+  @UseGuards(
+    RoleGuard([
+      RoleEnum.Teacher,
+      RoleEnum.Admin,
+      RoleEnum.Student,
+      RoleEnum.Guest,
+    ]),
+  )
   findOne(@Param('id') id: string, @Req() req: CustomRequest) {
     return this.courseService.findOne(id);
   }
@@ -91,6 +105,7 @@ export class CourseController {
     status: 200,
     description: 'The course has been successfully updated.',
   })
+  @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin]))
   update(
     @Param('id') id: string,
     @Body() updateCoursePayload: UpdateCoursePayload,
@@ -106,6 +121,7 @@ export class CourseController {
     status: 200,
     description: 'The course has been successfully deleted.',
   })
+  @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin]))
   remove(@Param('id') id: string) {
     return this.courseService.remove(id);
   }
