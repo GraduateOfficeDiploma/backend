@@ -1,26 +1,28 @@
-import { IsDate, IsString } from 'class-validator';
+import { IsDate, IsString, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTaskPayload {
-  @ApiProperty({ description: 'The title of the task' })
+  @ApiProperty({ type: String, description: 'Title of the task' })
   @IsString()
   title: string;
 
-  @ApiProperty({ description: 'A description of the task' })
+  @ApiProperty({ type: String, description: 'Description of the task' })
   @IsString()
   description: string;
 
-  @ApiProperty({ description: 'The due date of the task', type: Date })
+  @ApiProperty({ type: Date, description: 'Due date of the task' })
   @IsDate()
   dueDate: Date;
 
+  @ApiProperty({ type: String, description: 'ID of the course for which the task is created' })
+  @IsUUID()
+  courseId: string;
+
   @ApiProperty({
-    description: 'Attachments related to the task (if any)',
-    type: 'array',
-    items: {
-      type: 'string',
-      format: 'binary',
-    },
+    type: 'string',
+    format: 'binary',
+    description: 'Attachments for the task',
+    isArray: true,
   })
   attachments: Express.Multer.File[];
 }
