@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger'; // Import the necessary decorator
 import { UserEntity } from '../../user/entities/user.entity';
 import { TaskEntity } from '../../task/entities/task.entity';
@@ -6,7 +6,6 @@ import { CourseMemberEntity } from './course-member.entity';
 
 @Entity({ name: 'course' })
 export class CourseEntity {
-  @ApiProperty() // Add the ApiProperty decorator for documentation
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -22,16 +21,13 @@ export class CourseEntity {
   @Column({ type: 'text', nullable: true })
   imageUrl: string;
 
-  @ApiProperty() // Add the ApiProperty decorator for documentation
   @OneToMany(() => TaskEntity, (task) => task.course)
   tasks: TaskEntity[];
 
-  @ApiProperty() // Add the ApiProperty decorator for documentation
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(type => UserEntity, { lazy: true, nullable: true, eager: false })
   @JoinColumn({ name: 'created_by' })
   createdBy: UserEntity;
 
-  @ApiProperty() // Add the ApiProperty decorator for documentation
   @OneToMany(() => CourseMemberEntity, (member) => member.course)
   members: CourseMemberEntity[];
 }

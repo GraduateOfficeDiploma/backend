@@ -29,6 +29,6 @@ export class UserEntity {
   @Column({ nullable: false, default: '', select: false })
   refreshToken?: string;
 
-  @OneToMany(() => CourseMemberEntity, (courseMember) => courseMember.user)
+  @OneToMany(() => CourseEntity, (course) => course.createdBy, { lazy: true, nullable: true, eager: false })
   courses: CourseEntity[];
 }
