@@ -2,17 +2,20 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
+  JoinTable,
 } from 'typeorm';
 import { CourseEntity } from '../../course/entities/course.entity';
 import { UserEntity } from '../../user/entities/user.entity';
-import { ApiProperty } from '@nestjs/swagger'; // Import ApiProperty
+import { ApiProperty } from '@nestjs/swagger';
+import { AttachmentEntity } from './attachment.entity';
 
 @Entity({ name: 'task' })
 export class TaskEntity {
   @PrimaryGeneratedColumn('uuid')
-  @ApiProperty() // Add ApiProperty for documentation
+  @ApiProperty()
   id: string;
 
   @Column({ nullable: true })
@@ -24,7 +27,7 @@ export class TaskEntity {
   description: string;
 
   @ManyToOne(() => CourseEntity)
-  @ApiProperty({ type: CourseEntity }) // Define the type and relationship
+  @ApiProperty({ type: CourseEntity })
   course: CourseEntity | string;
 
   @Column()
@@ -34,10 +37,11 @@ export class TaskEntity {
 
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'created_by' })
-  @ApiProperty({ type: UserEntity }) // Define the type and relationship
+  @ApiProperty({ type: UserEntity })
   createdBy: UserEntity | string;
 
-  @Column({ type: 'text', array: true, nullable: true })
-  @ApiProperty({ type: 'array', items: { type: 'string' } }) // Define the type for array
-  attachmentUrls: string[];
+  @ManyToMany(() => AttachmentEntity)
+  @JoinTable({ name: "task_attachment" })
+  @ApiProperty({ type: [AttachmentEntity] })
+  attachments: AttachmentEntity[];
 }

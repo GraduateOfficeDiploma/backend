@@ -7,12 +7,15 @@ import { TaskEntity } from './entities/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CloudinaryService } from '../../libs/cloudinary/cloudinary.service';
+import { AttachmentEntity } from './entities/attachment.entity';
 
 @Injectable()
 export class TaskService {
   constructor(
     @InjectRepository(TaskEntity)
     private readonly taskRepository: Repository<TaskEntity>,
+    @InjectRepository(AttachmentEntity)
+    private readonly attachmentRepository: Repository<AttachmentEntity>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
@@ -30,8 +33,16 @@ export class TaskService {
     const uploadAttachments = createTaskPayload.attachments.map((a) =>
       this.cloudinaryService.uploadDocument(a),
     );
+    const attachments = await Promise.all(uploadAttachments);
 
-    task.attachmentUrls = await Promise.all(uploadAttachments);
+    task.attachments = await Promise.all(
+      attachments.map((a) => {
+        const attachment = new AttachmentEntity();
+        attachment.url = a.url;
+        attachment.fileName = a.fileName;
+        return this.attachmentRepository.save(attachment);
+      }),
+    );
 
     await this.taskRepository.save(task);
     return {

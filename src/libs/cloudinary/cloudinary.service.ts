@@ -24,12 +24,18 @@ export class CloudinaryService {
     return response.url;
   }
 
-  async uploadDocument(document: Express.Multer.File): Promise<string> {
+  async uploadDocument(
+    document: Express.Multer.File,
+  ): Promise<{ fileName: string; url: string }> {
     return new Promise((resolve, reject) => {
       const stream = v2.uploader.upload_stream(
         { resource_type: 'raw' },
         (err, result) => {
-          if (result) resolve(result.url);
+          if (result)
+            resolve({
+              url: result.url,
+              fileName: document.originalname,
+            });
           else reject(err);
         },
       );
