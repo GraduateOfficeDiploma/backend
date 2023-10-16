@@ -5,10 +5,10 @@ FROM node:18
 WORKDIR /src
 
 # Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+COPY ../package*.json ../
 
 # Install only required packages
-RUN npm ci --omit=dev
+RUN npm ci --only=prod
 
 # Bundle your Nest.js application source code
 COPY . .
