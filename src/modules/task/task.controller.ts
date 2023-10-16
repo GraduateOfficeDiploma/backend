@@ -1,15 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Req,
-  UseInterceptors,
-  UploadedFiles,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskPayload } from './payload/create-task.payload';
 import { UpdateTaskPayload } from './payload/update-task.payload';
@@ -17,14 +6,7 @@ import { CustomRequest } from '../../types/request';
 import { PaginationRequest } from '../../libs/request/pagination.request';
 import { TaskEntity } from './entities/task.entity';
 import { FilesInterceptor } from '@nestjs/platform-express';
-
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-  ApiBody,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 
 @Controller('tasks')
 @ApiTags('Tasks') // Add a tag to group related endpoints in Swagger
@@ -47,6 +29,8 @@ export class TaskController {
 
   @Post(':id/submit')
   @ApiOperation({ summary: 'Submit a solution for a task' })
+  @ApiParam({ name: 'id', description: 'The ID of the task to submit a solution for' })
+  @ApiResponse({ status: 200, description: 'The solution has been submitted' })
   submitSolution(@Body() _, @Req() req: CustomRequest) {}
 
   @Get()
@@ -71,7 +55,7 @@ export class TaskController {
   @ApiOperation({ summary: 'Update a task by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the task to update' })
   @ApiBody({ type: UpdateTaskPayload, description: 'The payload for updating a task' })
-  @ApiResponse({ status: 200, type: CreateTaskPayload, description: 'The updated task' })
+  @ApiResponse({ status: 200, type: TaskEntity, description: 'The updated task' })
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskPayload) {
     return this.taskService.update(+id, updateTaskDto);
   }
