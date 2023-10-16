@@ -117,7 +117,10 @@ export class TaskService {
       relations: {
         createdBy: true,
         course: true,
-        submissions: true,
+        submissions: {
+          attachments: true,
+        },
+        attachments: true,
       },
     });
     return tasks.map((t) => {

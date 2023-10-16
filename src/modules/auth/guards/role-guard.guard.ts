@@ -8,8 +8,6 @@ export const RoleGuard = (roles: RoleEnum[]): Type<CanActivate> => {
       const request = context.switchToHttp().getRequest<CustomRequest>();
       const user = request.user;
 
-      console.log(user, roles);
-
       return roles.includes(user?.role);
     }
   }
