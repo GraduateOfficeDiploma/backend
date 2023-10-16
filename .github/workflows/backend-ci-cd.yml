@@ -35,10 +35,8 @@ jobs:
               curl https://cli-assets.heroku.com/install.sh | sh
           fi
 
-          # Login to Heroku using the API key
-          echo $HEROKU_API_KEY | heroku login -i
-
-          # Deploy the Docker container to Heroku
+          # Set the Heroku API key as a Heroku CLI API key
+          echo $HEROKU_API_KEY | heroku login --no-interactive
           heroku container:release -a $HEROKU_BACKEND_APP_NAME web
 
       - name: Clean up
