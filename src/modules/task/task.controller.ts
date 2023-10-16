@@ -88,8 +88,8 @@ export class TaskController {
   @ApiOperation({ summary: 'Find a task by ID' })
   @ApiParam({ name: 'id', description: 'The ID of the task to find' })
   @ApiResponse({ status: 200, type: TaskEntity, description: 'The found task' })
-  findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
+  findOne(@Param('id') id: string, @Req() req: CustomRequest) {
+    return this.taskService.findOne(id, req.user);
   }
 
   @Patch(':id')

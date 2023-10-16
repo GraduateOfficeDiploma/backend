@@ -128,8 +128,27 @@ export class TaskService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a task with ID ${id}`;
+  findOne(id: string, user: UserEntity) {
+    return this.taskRepository.findOne({
+      where: {
+        id,
+        submissions: {
+          submittedBy: {
+            id: user.role === RoleEnum.Student ? user.id : undefined,
+          },
+        },
+      },
+      order: {
+        submissions: {
+          submitted_at: 'DESC',
+        },
+      },
+      relations: {
+        createdBy: true,
+        course: true,
+        submissions: true,
+      },
+    });
   }
 
   update(id: number, updateTaskDto: UpdateTaskPayload) {
