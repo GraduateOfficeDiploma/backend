@@ -9,11 +9,9 @@ environments:
         as: DATABASE
     config:
       NODE_ENV: staging
-      DATABASE_URL: postgresql://DATABASE_URL
   production:
     addons:
       - plan: heroku-postgresql
         as: DATABASE
     config:
       NODE_ENV: production
-      DATABASE_URL: postgresql://DATABASE_URL
