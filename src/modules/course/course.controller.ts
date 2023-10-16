@@ -24,8 +24,6 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
-  ApiBody,
-  ApiParam,
 } from '@nestjs/swagger';
 
 @Controller('courses')
