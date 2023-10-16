@@ -38,7 +38,10 @@ export class CourseController {
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Create a new course' })
-  @ApiResponse({ status: 201, description: 'The course has been successfully created.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The course has been successfully created.',
+  })
   create(
     @Req() req: CustomRequest,
     @Body() createCoursePayload: CreateCoursePayload,
@@ -50,14 +53,21 @@ export class CourseController {
 
   @Post(':id/join')
   @ApiOperation({ summary: 'Join a course' })
-  @ApiResponse({ status: 200, description: 'You have successfully joined the course.' })
+  @ApiResponse({
+    status: 200,
+    description: 'You have successfully joined the course.',
+  })
   addCourseMember(@Req() req: CustomRequest, @Param('id') courseId: string) {
     return this.courseService.addMember(courseId, req.user);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get courses' })
-  @ApiResponse({ status: 200, description: 'List of courses retrieved successfully.', type: [CourseEntity] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of courses retrieved successfully.',
+    type: [CourseEntity],
+  })
   getCourses(
     @Req() req: CustomRequest,
     @Body() payload: PaginationRequest<CourseEntity>,
@@ -67,7 +77,11 @@ export class CourseController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a course by ID' })
-  @ApiResponse({ status: 200, description: 'The course details have been retrieved.', type: CourseEntity })
+  @ApiResponse({
+    status: 200,
+    description: 'The course details have been retrieved.',
+    type: CourseEntity,
+  })
   findOne(@Param('id') id: string, @Req() req: CustomRequest) {
     return this.courseService.findOne(id);
   }
@@ -75,7 +89,10 @@ export class CourseController {
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Update a course' })
-  @ApiResponse({ status: 200, description: 'The course has been successfully updated.' })
+  @ApiResponse({
+    status: 200,
+    description: 'The course has been successfully updated.',
+  })
   update(
     @Param('id') id: string,
     @Body() updateCoursePayload: UpdateCoursePayload,
@@ -87,7 +104,10 @@ export class CourseController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a course' })
-  @ApiResponse({ status: 200, description: 'The course has been successfully deleted.' })
+  @ApiResponse({
+    status: 200,
+    description: 'The course has been successfully deleted.',
+  })
   remove(@Param('id') id: string) {
     return this.courseService.remove(id);
   }

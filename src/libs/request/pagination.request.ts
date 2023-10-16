@@ -9,7 +9,7 @@ export class PaginationRequest<TEntity> {
   @ApiProperty({ description: 'Ordering criteria for the query.' })
   orderBy: FindOptionsOrder<TEntity>;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The page number to retrieve.',
     minimum: 1, // Add validation constraints as needed
   })
@@ -17,7 +17,7 @@ export class PaginationRequest<TEntity> {
   @IsOptional()
   page: number = 1; // 1, 2, 3 etc
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'The number of items to be displayed on the page.',
     minimum: 1, // Add validation constraints as needed
   })

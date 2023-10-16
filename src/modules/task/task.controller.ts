@@ -81,7 +81,7 @@ export class TaskController {
     @Req() req: CustomRequest,
     @Body() payload: PaginationRequest<TaskEntity>,
   ) {
-    return this.taskService.find();
+    return this.taskService.find(req.user, payload);
   }
 
   @Get(':id')

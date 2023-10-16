@@ -14,7 +14,10 @@ export class CreateTaskPayload {
   @IsDate()
   dueDate: Date;
 
-  @ApiProperty({ type: String, description: 'ID of the course for which the task is created' })
+  @ApiProperty({
+    type: String,
+    description: 'ID of the course for which the task is created',
+  })
   @IsUUID()
   courseId: string;
 

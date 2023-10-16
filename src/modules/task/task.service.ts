@@ -9,6 +9,8 @@ import { Repository } from 'typeorm';
 import { CloudinaryService } from '../../libs/cloudinary/cloudinary.service';
 import { AttachmentEntity } from './entities/attachment.entity';
 import { TaskSubmissionEntity } from './entities/task-submission.entity';
+import { PaginationRequest } from '../../libs/request/pagination.request';
+import { RoleEnum } from '../user/enum/role.enum';
 
 @Injectable()
 export class TaskService {
@@ -85,8 +87,45 @@ export class TaskService {
     };
   }
 
-  find() {
-    return `This action returns all tasks`;
+  async find(
+    user: UserEntity,
+    { filter, orderBy, page, limit }: PaginationRequest<TaskEntity>,
+  ) {
+    const offset = (page - 1) * limit;
+    const tasks = await this.taskRepository.find({
+      where: {
+        course: {
+          members: {
+            user: user.id,
+          },
+        },
+        submissions: {
+          submittedBy: {
+            id: user.role === RoleEnum.Student ? user.id : undefined,
+          },
+        },
+        ...filter,
+      },
+      order: {
+        ...orderBy,
+        submissions: {
+          submitted_at: 'DESC',
+        },
+      },
+      skip: offset,
+      take: limit,
+      relations: {
+        createdBy: true,
+        course: true,
+        submissions: true,
+      },
+    });
+    return tasks.map((t) => {
+      return {
+        ...t,
+        submissions: t.submissions.slice(0, 1),
+      };
+    });
   }
 
   findOne(id: number) {

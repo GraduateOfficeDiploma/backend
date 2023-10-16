@@ -3,11 +3,11 @@ import dayjs from 'dayjs';
 // Second field should in db should be flag continue_studying which is set by admin
 
 //let registration_year = getYearFromBD(user_id);
-let registration_year = 2023;
+const registration_year = 2023;
 //let continue_studying = getContinueStudyingFromDB(user_id);
-let continue_studying = true;
-let current_date = dayjs();
-let start_flag = current_date.year() === registration_year;
+const continue_studying = true;
+const current_date = dayjs();
+const start_flag = current_date.year() === registration_year;
 let start_date, end_date;
 let days_studying = 0;
 

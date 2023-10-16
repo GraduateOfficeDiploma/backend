@@ -6,11 +6,13 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { CourseEntity } from '../../course/entities/course.entity';
 import { UserEntity } from '../../user/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { AttachmentEntity } from './attachment.entity';
+import { TaskSubmissionEntity } from './task-submission.entity';
 
 @Entity({ name: 'task' })
 export class TaskEntity {
@@ -40,8 +42,11 @@ export class TaskEntity {
   @ApiProperty({ type: UserEntity })
   createdBy: UserEntity | string;
 
+  @OneToMany(() => TaskSubmissionEntity, (subm) => subm.task)
+  submissions: TaskSubmissionEntity[];
+
   @ManyToMany(() => AttachmentEntity)
-  @JoinTable({ name: "task_attachment" })
+  @JoinTable({ name: 'task_attachment' })
   @ApiProperty({ type: [AttachmentEntity] })
   attachments: AttachmentEntity[];
 }

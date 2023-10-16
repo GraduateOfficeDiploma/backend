@@ -1,6 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { RoleEnum } from '../enum/role.enum';
-import { CourseMemberEntity } from '../../course/entities/course-member.entity';
 import { CourseEntity } from '../../course/entities/course.entity';
 
 @Entity({ name: 'user' })
@@ -29,6 +28,6 @@ export class UserEntity {
   @Column({ nullable: false, default: '', select: false })
   refreshToken?: string;
 
-  @OneToMany(() => CourseEntity, (course) => course.createdBy, { lazy: true, nullable: true, eager: false })
+  @OneToMany(() => CourseEntity, (course) => course.createdBy)
   courses: CourseEntity[];
 }
