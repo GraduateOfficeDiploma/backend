@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CloudinaryService } from '../../libs/cloudinary/cloudinary.service';
 import { AttachmentEntity } from './entities/attachment.entity';
+import { TaskSubmissionEntity } from './entities/task-submission.entity';
 
 @Injectable()
 export class TaskService {
@@ -16,6 +17,8 @@ export class TaskService {
     private readonly taskRepository: Repository<TaskEntity>,
     @InjectRepository(AttachmentEntity)
     private readonly attachmentRepository: Repository<AttachmentEntity>,
+    @InjectRepository(TaskSubmissionEntity)
+    private readonly taskSubmissionRepository: Repository<TaskSubmissionEntity>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
@@ -47,6 +50,38 @@ export class TaskService {
     await this.taskRepository.save(task);
     return {
       id: task.id,
+    };
+  }
+
+  async submitTaskSolution(
+    taskId: string,
+    attachments: Express.Multer.File[],
+    user: UserEntity,
+  ) {
+    const task = await this.taskRepository.findOneOrFail({
+      where: { id: taskId },
+    });
+    const submission = new TaskSubmissionEntity();
+    submission.submittedBy = user;
+    submission.task = task;
+
+    const uploadAttachments = attachments.map((a) =>
+      this.cloudinaryService.uploadDocument(a),
+    );
+    const uploadedAttachments = await Promise.all(uploadAttachments);
+
+    submission.attachments = await Promise.all(
+      uploadedAttachments.map((a) => {
+        const attachment = new AttachmentEntity();
+        attachment.url = a.url;
+        attachment.fileName = a.fileName;
+        return this.attachmentRepository.save(attachment);
+      }),
+    );
+
+    await this.taskSubmissionRepository.save(submission);
+    return {
+      id: submission.id,
     };
   }
 
