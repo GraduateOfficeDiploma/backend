@@ -16,6 +16,10 @@ import JwtRefreshGuard from './guards/refresh-token.guard';
 import { PublicUser } from '../user/entities/publicUser.entity';
 import { CustomRequest } from '../../types/request';
 import { LoginPayload } from './payload/login.payload';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+
+@ApiTags('Authentication') // Add a tag to group related endpoints in Swagger
+@ApiBearerAuth() // Enable Bearer Authentication
 
 @Controller('auth')
 export class AuthController {
@@ -25,6 +29,10 @@ export class AuthController {
   ) {}
 
   @Post('login')
+  @ApiOperation({ summary: 'User login' })
+  @ApiBody({ type: LoginPayload, description: 'The payload for user login' }) // Use LoginPayload
+  @ApiResponse({ status: 200, description: 'User logged in successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async login(
     @Body() body: LoginPayload,
     @Res({ passthrough: true }) res: Response,
@@ -52,6 +60,8 @@ export class AuthController {
 
   @UseGuards(JwtRefreshGuard)
   @Get('refresh')
+  @ApiOperation({ summary: 'Refresh access token' })
+  @ApiResponse({ status: 200, description: 'Access token refreshed successfully' })
   refresh(@Req() req: CustomRequest) {
     const user = req.user as PublicUser;
     const accessToken = this.authService.createAccessToken(user.id);
@@ -61,9 +71,11 @@ export class AuthController {
       accessToken,
     };
   }
-
+  
   @UseGuards(JwtAuthGuard)
   @Get('logout')
+  @ApiOperation({ summary: 'User logout' })
+  @ApiResponse({ status: 200, description: 'User logged out' })
   async logout(
     @Req() req: CustomRequest,
     @Res({ passthrough: true }) res: Response,

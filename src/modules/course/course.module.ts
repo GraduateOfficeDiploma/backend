@@ -5,6 +5,7 @@ import { CloudinaryModule } from '../../libs/cloudinary/cloudinary.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CourseEntity } from './entities/course.entity';
 import { CourseMemberEntity } from './entities/course-member.entity';
+import { ApiTags } from '@nestjs/swagger';
 
 @Module({
   imports: [
@@ -14,4 +15,5 @@ import { CourseMemberEntity } from './entities/course-member.entity';
   controllers: [CourseController],
   providers: [CourseService],
 })
+@ApiTags('Courses Module') // Tag for this module
 export class CourseModule {}

@@ -40,18 +40,18 @@ export class TaskService {
   }
 
   find() {
-    return `This action returns all task`;
+    return `This action returns all tasks`;
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} task`;
+    return `This action returns a task with ID ${id}`;
   }
 
   update(id: number, updateTaskDto: UpdateTaskPayload) {
-    return `This action updates a #${id} task`;
+    return `This action updates a task with ID ${id}`;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} task`;
+    return `This action removes a task with ID ${id}`;
   }
 }
