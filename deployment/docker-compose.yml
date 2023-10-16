@@ -1,32 +1,32 @@
-
-version: "3"
+version: '3'
 services:
-  postgres:
-    container_name: postgres
-    image: postgres:latest
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "5432:5432"
-    volumes:
-      - /data/postgres:/data/postgres
-    env_file:
-      - docker.env
-    networks:
-      - postgres
+      - '3303:3303'  # Map your application's port to host
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: admin
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - '5432:5432'  # Map PostgreSQL port to host
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    ports:
+      - '8080:8080'  # Map Swagger UI port to host
+    environment:
+      API_URL: http://backend:3303/docs-json  # Replace with your Swagger JSON endpoint
 
   pgadmin:
-    links:
-      - postgres:postgres
-    container_name: pgadmin
     image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: youremail@example.com
+      PGADMIN_DEFAULT_PASSWORD: yourpassword
     ports:
-      - "8080:80"
-    volumes:
-      - /data/pgadmin:/root/.pgadmin
-    env_file:
-      - docker.env
-    networks:
-      - postgres
-
-networks:
-  postgres:
-    driver: bridge
+      - '5050:80'  # Map PgAdmin port to host
