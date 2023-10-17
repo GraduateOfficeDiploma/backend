@@ -120,6 +120,7 @@ export class CourseService {
         members: {
           user: true,
         },
+        tasks: true,
       },
     });
     const membersCount = await this.courseMemberRepository.count({

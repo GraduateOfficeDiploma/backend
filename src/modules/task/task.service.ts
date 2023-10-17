@@ -5,7 +5,7 @@ import { UserEntity } from '../user/entities/user.entity';
 import { CommandResponse } from '../../libs/response/command.response';
 import { TaskEntity } from './entities/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryBuilder, Repository } from 'typeorm';
 import { CloudinaryService } from '../../libs/cloudinary/cloudinary.service';
 import { AttachmentEntity } from './entities/attachment.entity';
 import { TaskSubmissionEntity } from './entities/task-submission.entity';
@@ -97,11 +97,6 @@ export class TaskService {
         course: {
           members: {
             user: user.id,
-          },
-        },
-        submissions: {
-          submittedBy: {
-            id: user.role === RoleEnum.Student ? user.id : undefined,
           },
         },
         ...filter,
