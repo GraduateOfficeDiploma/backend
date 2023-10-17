@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UploadedFiles,
   UseGuards,
@@ -84,7 +85,7 @@ export class TaskController {
   @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin, RoleEnum.Student]))
   find(
     @Req() req: CustomRequest,
-    @Body() payload: PaginationRequest<TaskEntity>,
+    @Query() payload: PaginationRequest<TaskEntity>,
   ) {
     return this.taskService.find(req.user, payload);
   }
