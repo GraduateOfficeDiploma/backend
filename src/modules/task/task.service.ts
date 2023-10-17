@@ -114,14 +114,20 @@ export class TaskService {
         course: true,
         submissions: {
           attachments: true,
+          submittedBy: true,
         },
         attachments: true,
       },
     });
     return tasks.map((t) => {
+      const submissions = t.submissions.filter(s => {
+        // @ts-ignore
+        const submittedBy = filter?.course?.members?.user ?? user.id;
+        return s.submittedBy.id === submittedBy;
+      })
       return {
         ...t,
-        submissions: t.submissions.slice(0, 1),
+        submissions: submissions.slice(0, 1),
       };
     });
   }
