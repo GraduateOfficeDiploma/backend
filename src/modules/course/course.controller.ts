@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   Patch,
-  Post,
+  Post, Query,
   Req,
   UploadedFile,
   UseGuards,
@@ -74,7 +74,7 @@ export class CourseController {
   @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin, RoleEnum.Student]))
   getCourses(
     @Req() req: CustomRequest,
-    @Body() payload: PaginationRequest<CourseEntity>,
+    @Query() payload: PaginationRequest<CourseEntity>,
   ) {
     return this.courseService.getCourses(req.user, payload);
   }
