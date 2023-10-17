@@ -29,6 +29,8 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../auth/guards/role-guard.guard';
 import { RoleEnum } from '../user/enum/role.enum';
+import { CommandResponse } from '../../libs/response/command.response';
+import { EvaluateSubmissionPayload } from './payload/evaluate-submission.payload';
 
 @Controller('tasks')
 @ApiTags('Tasks') // Add a tag to group related endpoints in Swagger
@@ -97,6 +99,17 @@ export class TaskController {
   @UseGuards(RoleGuard([RoleEnum.Teacher, RoleEnum.Admin, RoleEnum.Student]))
   findOne(@Param('id') id: string, @Req() req: CustomRequest) {
     return this.taskService.findOne(id, req.user);
+  }
+
+  @Patch(':taskId/submissions/:submissionId/evaluate')
+  @UseGuards(RoleGuard([RoleEnum.Admin, RoleEnum.Teacher]))
+  evaluateTaskSubmission(
+    @Param('taskId') taskId: string,
+    @Param('submissionId') submissionId: string,
+    @Req() req: CustomRequest,
+    @Body() taskEvaluationPayload: EvaluateSubmissionPayload,
+  ): Promise<CommandResponse> {
+    return this.taskService.evaluateTask(submissionId, taskEvaluationPayload);
   }
 
   @Patch(':id')

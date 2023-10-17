@@ -11,6 +11,7 @@ import { AttachmentEntity } from './entities/attachment.entity';
 import { TaskSubmissionEntity } from './entities/task-submission.entity';
 import { PaginationRequest } from '../../libs/request/pagination.request';
 import { RoleEnum } from '../user/enum/role.enum';
+import { EvaluateSubmissionPayload } from './payload/evaluate-submission.payload';
 
 @Injectable()
 export class TaskService {
@@ -120,11 +121,11 @@ export class TaskService {
       },
     });
     return tasks.map((t) => {
-      const submissions = t.submissions.filter(s => {
+      const submissions = t.submissions.filter((s) => {
         // @ts-ignore
         const submittedBy = filter?.course?.members?.user ?? user.id;
         return s.submittedBy.id === submittedBy;
-      })
+      });
       return {
         ...t,
         submissions: submissions.slice(0, 1),
@@ -153,6 +154,22 @@ export class TaskService {
         submissions: true,
       },
     });
+  }
+
+  async evaluateTask(
+    submissionId: string,
+    payload: EvaluateSubmissionPayload,
+  ): Promise<CommandResponse> {
+    const submission = await this.taskSubmissionRepository.findOneOrFail({
+      where: {
+        id: submissionId,
+      },
+    });
+    submission.grade = payload.grade;
+    await this.taskSubmissionRepository.save(submission);
+    return {
+      id: submissionId,
+    };
   }
 
   update(id: number, updateTaskDto: UpdateTaskPayload) {
