@@ -20,6 +20,8 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
+  ApiParam,
+  ApiBody,
 } from '@nestjs/swagger';
 
 @ApiTags('Users') // Add a tag to group related endpoints in Swagger
@@ -31,6 +33,7 @@ export class UserController {
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get user by ID' })
+  @ApiParam({ name: 'id', description: 'User ID' })
   @ApiResponse({
     status: 200,
     description: 'User found',
@@ -42,6 +45,10 @@ export class UserController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiBody({ type: CreateUserPayload })
+  @ApiResponse({ status: 201, description: 'User created successfully' })
+  @ApiResponse({ status: 409, description: 'User already exists' })
   async create(@Body() createUserDto: CreateUserPayload) {
     const user = await this.userService.findOne({ email: createUserDto.email });
     if (user) throw new ResourceExistsException('User');
@@ -51,12 +58,15 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Update user' })
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiBody({ type: UpdateUserPayload })
   @ApiResponse({
     status: 200,
     description: 'User updated successfully',
     type: UpdateUserPayload,
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   update(
     @Req() req: CustomRequest,
     @Param('id') id: string,

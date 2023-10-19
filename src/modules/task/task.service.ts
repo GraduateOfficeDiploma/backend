@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTaskPayload } from './payload/create-task.payload';
 import { UpdateTaskPayload } from './payload/update-task.payload';
+import { CreatedTaskResponse } from './payload/created-task-response.payload';
 import { UserEntity } from '../user/entities/user.entity';
 import { CommandResponse } from '../../libs/response/command.response';
 import { TaskEntity } from './entities/task.entity';
@@ -13,7 +14,11 @@ import { PaginationRequest } from '../../libs/request/pagination.request';
 import { RoleEnum } from '../user/enum/role.enum';
 import { EvaluateSubmissionPayload } from './payload/evaluate-submission.payload';
 
+// Import Swagger decorators
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
+
 @Injectable()
+@ApiTags('Tasks') // Add a tag to group related endpoints in Swagger
 export class TaskService {
   constructor(
     @InjectRepository(TaskEntity)
@@ -24,7 +29,17 @@ export class TaskService {
     private readonly taskSubmissionRepository: Repository<TaskSubmissionEntity>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
-
+  
+  @ApiOperation({ summary: 'Create a new task' })
+  @ApiBody({
+    type: CreateTaskPayload,
+    description: 'The payload for creating a new task',
+  })
+  @ApiResponse({
+    status: 201,
+    type: CreatedTaskResponse,
+    description: 'The created task',
+  })
   async create(
     createTaskPayload: CreateTaskPayload,
     user: UserEntity,
@@ -55,7 +70,12 @@ export class TaskService {
       id: task.id,
     };
   }
-
+  @ApiOperation({ summary: 'Submit a solution for a task' })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the task to submit a solution for',
+  })
+  @ApiResponse({ status: 200, description: 'The solution has been submitted' })
   async submitTaskSolution(
     taskId: string,
     attachments: Express.Multer.File[],
@@ -87,7 +107,13 @@ export class TaskService {
       id: submission.id,
     };
   }
-
+  
+  @ApiOperation({ summary: 'Get a list of tasks' })
+  @ApiResponse({
+    status: 200,
+    type: [TaskEntity],
+    description: 'A list of tasks',
+  })
   async find(
     user: UserEntity,
     { filter, orderBy, page, limit }: PaginationRequest<TaskEntity>,
@@ -132,8 +158,11 @@ export class TaskService {
       };
     });
   }
-
-  findOne(id: string, user: UserEntity) {
+  
+  @ApiOperation({ summary: 'Find a task by ID' })
+  @ApiParam({ name: 'id', description: 'The ID of the task to find' })
+  @ApiResponse({ status: 200, type: TaskEntity, description: 'The found task' })
+  async findOne(id: string, user: UserEntity) {
     return this.taskRepository.findOne({
       where: {
         id,
@@ -155,7 +184,7 @@ export class TaskService {
       },
     });
   }
-
+  @ApiOperation({ summary: 'Evaluate a task submission' })
   async evaluateTask(
     submissionId: string,
     payload: EvaluateSubmissionPayload,
@@ -172,11 +201,25 @@ export class TaskService {
     };
   }
 
-  update(id: number, updateTaskDto: UpdateTaskPayload) {
+  @ApiOperation({ summary: 'Update a task by ID' })
+  @ApiParam({ name: 'id', description: 'The ID of the task to update' })
+  @ApiBody({
+    type: UpdateTaskPayload,
+    description: 'The payload for updating a task',
+  })
+  @ApiResponse({
+    status: 200,
+    type: TaskEntity,
+    description: 'The updated task',
+  })
+  async update(id: number, updateTaskDto: UpdateTaskPayload) {
     return `This action updates a task with ID ${id}`;
   }
-
-  remove(id: number) {
+  
+  @ApiOperation({ summary: 'Delete a task by ID' })
+  @ApiParam({ name: 'id', description: 'The ID of the task to delete' })
+  @ApiResponse({ status: 200, description: 'The task has been deleted' })
+  async remove(id: number) {
     return `This action removes a task with ID ${id}`;
   }
 }
