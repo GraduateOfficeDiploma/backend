@@ -11,7 +11,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   app.enableCors({
-    origin: configService.get('CLIENT_DOMAIN'),
+    origin: '*',
     credentials: true,
   });
 
